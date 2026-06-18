@@ -20,12 +20,14 @@ llm = ChatGroq(
     temperature = 0
 )
 
-print("=" * 50)
-print(GROQ_API_KEY[:10])
-print("=" * 50)
+# print("=" * 50)
+# print(GROQ_API_KEY[:10])
+# print("=" * 50)
 
-if not GROQ_API_KEY:
-    raise ValueError("❌ GROQ_API_KEY no encontrada")
+if GROQ_API_KEY:
+    print("✅ GROQ_API_KEY cargada correctamente")
+else:
+    print("❌ GROQ_API_KEY no encontrada")
 
 # Herramienta de informaciones
 @tool
@@ -250,10 +252,17 @@ def generar_grafico(pregunta: str, df:pd.DataFrame) -> str:
                     "sns":sns}
     exec_locals = {}
 
-    exec(script_limpio, exec_globals, exec_locals)
+    try:
+        exec(script_limpio, exec_globals, exec_locals)
+
+    except Exception as e:
+        st.error(f"Error al generar gráfico: {e}")
+        return ""
+    
     fig = plt.gcf()
 
     st.pyplot(fig)
+    plt.close(fig)
 
     return ""
 
@@ -313,7 +322,9 @@ def crear_herramientas(df):
 
     herramienta_codigos_python = Tool(
         name = 'Herramienta Códigos de Python',
-        func = PythonAstREPLTool(locals={"df":df}),
+        python_tool = PythonAstREPLTool(
+            locals={"df": df}
+        ),
         description="""
                     🐍 Utilice esta herramienta para:
 
