@@ -23,17 +23,17 @@ st.info("""
 
 📄 **Generar reportes automáticos**
 
-• 📋 Reporte de información general
-• 📈 Reporte de estadísticas descriptivas
-• 🧹 Identificación de valores nulos
-• 🔍 Detección de registros duplicados
-• 💡 Recomendaciones de análisis
+    • 📋 Reporte de información general
+    • 📈 Reporte de estadísticas descriptivas
+    • 🧹 Identificación de valores nulos
+    • 🔍 Detección de registros duplicados
+    • 💡 Recomendaciones de análisis
 
 🔎 **Realizar preguntas sobre tus datos**
 
-• ¿Cuál es el promedio de ventas?
-• ¿Cuántos clientes existen por región?
-• ¿Cuál es el producto más vendido?
+    • ¿Cuál es el promedio de ventas?
+    • ¿Cuántos clientes existen por región?
+    • ¿Cuál es el producto más vendido?
 
 📊 **Crear gráficos automáticamente**
 

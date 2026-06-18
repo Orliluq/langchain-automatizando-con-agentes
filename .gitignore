@@ -21,3 +21,25 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+# Environment variables
+.env
+.env*
+!.env.example
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Streamlit
+.streamlit/secrets.toml
+
+# VSCode
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db

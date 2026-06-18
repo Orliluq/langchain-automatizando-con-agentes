@@ -20,6 +20,13 @@ llm = ChatGroq(
     temperature = 0
 )
 
+print("=" * 50)
+print(GROQ_API_KEY[:10])
+print("=" * 50)
+
+if not GROQ_API_KEY:
+    raise ValueError("❌ GROQ_API_KEY no encontrada")
+
 # Herramienta de informaciones
 @tool
 def informacion_df(pregunta:str, df:pd.DataFrame) -> str:
