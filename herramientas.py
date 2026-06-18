@@ -57,18 +57,79 @@ def informacion_df(pregunta:str, df:pd.DataFrame) -> str:
 
                 ============================================================
 
-                Con base en esta información, redacta un resumen claro y organizado que contenga:
+           Con base en esta información, redacta un informe claro, profesional y bien estructurado.
 
-                1. Un título: ## Informe de información general sobre el dataset,
-                2. La dimensión total del DataFrame;
-                3. La descripción de cada columna (incluyendo nombre, tipo de dato y qué representa esa columna);
-                4. Las columnas que contienen datos nulos, con la respectiva cantidad;
-                5. Las columnas que contienen cadenas 'nan', con la respectiva cantidad;
-                6. La existencia (o no) de datos duplicados;
-                7. Un párrafo sobre los análisis que se pueden realizar con estos datos;
-                8. Un párrafo sobre los tratamientos que se pueden aplicar a los datos.
-               """,
-               input_variables = ['pregunta','shape','columns','nulos','nans_str','duplicados']
+            ### 📊 Estructura del informe
+
+            # 📊 Informe General del Dataset
+
+            Incluye las siguientes secciones:
+
+            ## 📏 Dimensiones del Dataset
+                - Número total de filas.
+                - Número total de columnas.
+
+            ## 🏷️ Descripción de las Columnas
+            Para cada columna indicar:
+                - Nombre de la columna.
+                - Tipo de dato.
+                - Descripción de lo que representa.
+                - Posible utilidad dentro del análisis.
+
+            ## 🧬 Tipos de Datos
+                - Resumen de los tipos de datos presentes.
+                - Cantidad de columnas por tipo.
+
+            ## ❌ Valores Nulos
+                - Columnas que contienen valores nulos.
+                - Cantidad de valores nulos por columna.
+                - Impacto potencial sobre el análisis.
+
+            ## ⚠️ Cadenas de Texto 'nan'
+                - Columnas que contienen la cadena literal 'nan'.
+                - Cantidad de ocurrencias por columna.
+                - Diferencia entre valores nulos reales y cadenas 'nan'.
+
+            ## 🔁 Registros Duplicados
+                - Indicar si existen registros duplicados.
+                - Cantidad total de duplicados encontrados.
+                - Recomendaciones para su tratamiento.
+
+            ## 📈 Calidad General de los Datos
+                - Evaluación general de la calidad del dataset.
+                - Posibles problemas detectados.
+                - Riesgos para el análisis.
+
+            ## 💡 Posibles Análisis
+            Describe los análisis que podrían realizarse con este conjunto de datos, por ejemplo:
+                - Análisis descriptivo.
+                - Análisis comparativo.
+                - Segmentación.
+                - Tendencias.
+                - Correlaciones.
+                - Predicciones.
+
+            ## 🛠️ Recomendaciones de Preparación de Datos
+            Explica qué transformaciones podrían aplicarse:
+                - Limpieza de valores nulos.
+                - Eliminación de duplicados.
+                - Conversión de tipos de datos.
+                - Normalización o estandarización.
+                - Tratamiento de valores atípicos.
+
+            ### 🎯 Requisitos de formato
+
+            - Utiliza Markdown.
+            - Incluye emojis en cada sección.
+            - Usa listas cuando sea apropiado.
+            - Mantén un lenguaje profesional y fácil de entender.
+            - Destaca hallazgos importantes con viñetas.
+            - Finaliza con una conclusión ejecutiva bajo el título:
+
+            ## 📝 Conclusión Ejecutiva
+            """,
+            input_variables = ['pregunta','shape','columns','nulos','nans_str','duplicados']
+
     )
 
     cadena = plantilla_respuesta | llm | StrOutputParser()
@@ -139,14 +200,14 @@ def generar_grafico(pregunta: str, df:pd.DataFrame) -> str:
         template = """
         Eres un especialista en visualización de datos. Tu tarea es generar **únicamente el código Python** para graficar con base en la solicitud del usuario.
 
-        ## Solicitud del usuario:
-        "{pregunta}"
+        ## 🎯 Solicitud del usuario:
+            "{pregunta}"
 
-        ## Metadatos del DataFrame:
-        {columnas}
+        ## 📋 Metadatos del DataFrame:
+            {columnas}
 
-        ## Muestra de los datos (3 primeras filas):
-        {muestra}
+        ## 👀 Muestra de los datos:
+            {muestra}
 
         ## Instrucciones obligatorias:
         1. Usa las bibliotecas `matplotlib.pyplot` (como `plt`) y `seaborn` (como `sns`);
@@ -193,23 +254,34 @@ def crear_herramientas(df):
     herramienta_informacion_df = Tool(
     name = 'Informaciones DF',
     func = lambda pregunta: informacion_df.run({"pregunta":pregunta,"df":df}),
-    description = """
-                 Utilice esta herramienta siempre que el usuario solicite informaciones generales sobre el dataframe, 
-                 incluyendo el número de columnas y filas, nombres de las columnas, y sus tipos de datos, 
-                 conteo de datos nulos, y duplicados para dar un panorama general sobre el archivo.
-                  """,
+    description="""
+                📊 Utilice esta herramienta cuando el usuario solicite:
+
+                    📏 Cantidad de filas y columnas
+                    🏷️ Nombres de columnas
+                    🧬 Tipos de datos
+                    ❌ Valores nulos
+                    🔁 Registros duplicados
+
+                Ideal para obtener una visión general del dataset.
+                """,
     return_direct = True
     )
 
     herramienta_resumen_estadístico = Tool(
         name = 'Resumen Estadístico',
         func = lambda pregunta: resumen_estadistico.run({"pregunta":pregunta,"df":df}),
-        description = """
-                    Utilice esta herramienta siempre que el usuario solicite  un resumen estadístico completo 
-                    y descriptivo de la base de datos ,incluyendo varias estadísticas (promedio, desvío típico, 
-                    mínimo, máximo, etc.). No utilice esta herramienta para calcular una única métrica como 
-                    por ejemplo: 'Cuál es el promedio de x?' o 'Cuál es la correlación de las variables?' ; 
-                    en estos casos utiliza la herramienta_codigos_python.
+        description="""
+                    📈 Utilice esta herramienta cuando el usuario solicite:
+
+                        📊 Estadísticas descriptivas
+                        📉 Desviación estándar
+                        📈 Promedios
+                        🔺 Máximos
+                        🔻 Mínimos
+                        🚨 Posibles outliers
+
+                    No utilizar para cálculos puntuales.
                     """,
         return_direct = True
     )
@@ -217,15 +289,17 @@ def crear_herramientas(df):
     herramienta_generar_grafico = Tool(
         name = 'Generar Gráfico',
         func = lambda pregunta: generar_grafico.run({"pregunta":pregunta,"df":df}),
-        description = """
-                    Utilice esta herramienta siempre que el usuario solicite una gráfica a partir de un DataFrame pandas (`df`) 
-                    con base en una instrucción del usuario. La instrucción puede contener solicitudes tales como: 
-                    'Crea un gráfico de promedio de tiempo de entrega por clima', 
-                    'Haz un plot de la distribución del tiempo de entrega', 
-                    'Haz un plot entre la clasificación de los colaboradores y el tiempo de entrega'. 
-                    Las palabras-clave que indican el uso de esta herramienta incluyen: 'crea un gráfico', 
-                    'reliza un plot', 'plotea', 'visualiza', 'muestra la distribución', 
-                    'representa graficamente', entre otras.
+        description="""
+                    🎨 Utilice esta herramienta cuando el usuario solicite:
+
+                        📊 Gráficos
+                        📈 Visualizaciones
+                        📉 Distribuciones
+                        🎯 Comparaciones
+                        📦 Boxplots
+                        🔍 Scatterplots
+
+                    Convierte instrucciones en lenguaje natural en visualizaciones automáticas.
                     """,
         return_direct = True
     )
@@ -233,16 +307,20 @@ def crear_herramientas(df):
     herramienta_codigos_python = Tool(
         name = 'Herramienta Códigos de Python',
         func = PythonAstREPLTool(locals={"df":df}),
-        description = """
-                    Utilice esta herramienta siempre que el usuario solicite cálculos, 
-                    consultas o transformaciones específicas usando Python directamente sobre el DataFrame (`df`). 
-                    Ejemplos de uso incluyen: 'Cuál es el promedio de la columna X?', 
-                    'Cuáles son los valores únicos de la columna Y?', 'Cuál es la correlación entre A y B?', 
-                    entre otros cálculos puntuales. Evita utilizar esta herramienta para solicitudes más 
-                    amplias o descriptivas tales como informaciones generales sobre el DataFrame, 
-                    resumenes estadísticos completos o la generación de gráficas; en estos casos, 
-                    utiliza las herramientas adecuadas.
-                    """,
+        description="""
+                    🐍 Utilice esta herramienta para:
+
+                        ➕ Cálculos
+                        📊 Agregaciones
+                        🔍 Consultas específicas
+                        📈 Correlaciones
+                        🧮 Métricas personalizadas
+
+                        Ejemplos:
+                        • ¿Cuál es el promedio de ventas?
+                        • ¿Cuántos valores únicos existen?
+                        • ¿Cuál es la correlación entre A y B?
+                        """,
         return_direct = False
     )
 

@@ -8,35 +8,57 @@ from langchain.agents import AgentExecutor
 from herramientas import crear_herramientas
 
 # Inicia la aplicación
-st.set_page_config(page_title="Asistente de Análisis de Datos con IA", layout="centered")
-st.title("🦜 Asistente de Análisis de Datos con IA")
+st.set_page_config(
+    page_title="Asistente de Análisis de Datos con IA",
+    layout="centered"
+)
+
+st.title("🤖📊 Asistente Inteligente de Análisis de Datos")
 
 # Descripción de la herramienta
 st.info("""
-Este asistente utiliza un agente, creado con Langchain, para ayudarte a explorar, analizar y visualizar datos de forma interactiva.
-Basta con subir un archivo CSV y podrás:
+🚀 Este asistente utiliza un agente de IA creado con LangChain para ayudarte a explorar, analizar y visualizar datos de forma interactiva.
 
-* 📄 **Generar reportes automáticos**:
+📂 Carga un archivo CSV y podrás:
 
-  * **Reporte de información general**: presenta la dimensión del DataFrame, nombres y tipos de las columnas, conteo de datos nulos y duplicados, además de sugerencias de tratamientos y análisis adicionales.
-  * **Reporte de estadísticas descriptivas**: muestra valores como media, mediana, desviación estándar, mínimo y máximo; identifica posibles outliers y sugiere próximos pasos con base en los patrones detectados.
+📄 **Generar reportes automáticos**
 
-* 🔎 **Hacer preguntas simples sobre los datos**: como "¿Cuál es el promedio de la columna X?", "¿Cuántos registros existen para cada categoría de la columna Y?".
+• 📋 Reporte de información general
+• 📈 Reporte de estadísticas descriptivas
+• 🧹 Identificación de valores nulos
+• 🔍 Detección de registros duplicados
+• 💡 Recomendaciones de análisis
 
-* 📊 **Crear gráficos automáticamente** a partir de preguntas en lenguaje natural.
+🔎 **Realizar preguntas sobre tus datos**
 
-Ideal para analistas, científicos de datos y equipos que buscan agilidad e insights rápidos con apoyo de IA.
+• ¿Cuál es el promedio de ventas?
+• ¿Cuántos clientes existen por región?
+• ¿Cuál es el producto más vendido?
+
+📊 **Crear gráficos automáticamente**
+
+Describe lo que quieres visualizar y la IA generará el análisis correspondiente.
+
+🎯 Ideal para analistas, científicos de datos, estudiantes y equipos de negocio.
 """)
 
 # Upload de CSV
-st.markdown("### 📁 Realiza la carga de tu archivo CSV")
-archivo_cargado = st.file_uploader("Selecciona un archivo CSV", type="csv", label_visibility="collapsed")
+st.markdown("## 📂 Carga tu archivo CSV")
+archivo_cargado = st.file_uploader(
+    "📁 Selecciona un archivo CSV",
+    type="csv",
+    label_visibility="collapsed"
+)
 
 if archivo_cargado:
     df = pd.read_csv(archivo_cargado)
-    st.success("Archivo cargado exitosamente!")
-    st.markdown("### 🔍 Primeras filas de tu conjunto de datos")
+    st.success("✅ Archivo cargado exitosamente")
+    st.markdown("### 👀 Vista previa de los datos")
     st.dataframe(df.head())
+
+    st.info(
+        f"📊 Dataset con **{df.shape[0]} filas** y **{df.shape[1]} columnas**"
+    )
 
     # LLM
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
@@ -96,59 +118,88 @@ if archivo_cargado:
 
     # ACCIONES RÁPIDAS
     st.markdown("---")
-    st.markdown("## ⚡ Acciones rápidas")
+    st.markdown("## ⚡ Acciones rápidas con IA")
 
     # Reporte de Informaciones Generales
-    if st.button("📄 Reporte de Informaciones Generales", key="boton_reporte_general"):
-        with st.spinner("Generando Reporte 🦜"):
+    if st.button(
+        "📄📋 Generar Reporte General",
+        key="boton_reporte_general"
+    ):
+        with st.spinner("🤖 Analizando dataset..."):
             respuesta = orquestador.invoke({"input": "Quero um relatório com informações sobre os dados"})
             st.session_state['reporte_general'] = respuesta["output"]
 
     # Exhibe el reporte con botón de descarga
     if 'reporte_general' in st.session_state:
-        with st.expander("Resultado: Reporte de Informaciones Generales"):
+        with st.expander("📄 Resultado: Reporte General"):
             st.markdown(st.session_state['reporte_general'])
 
             st.download_button(
-                label="📥 Descargar Reporte",
+                label="📥 Descargar Reporte General",
                 data=st.session_state['reporte_general'],
-                file_name="reporte_informaciones_generales.md",
+                file_name="reporte_general.md",
                 mime="text/markdown"
             )
 
     # Reporte de estadísticas descriptivas
-    if st.button("📄 Reporte de estadísticas descriptivas", key="boton_reporte_estadisticas"):
-        with st.spinner("Generando Reporte 🦜"):
+    if st.button(
+        "📈📊 Generar Reporte Estadístico",
+        key="boton_reporte_estadisticas"
+    ):
+        with st.spinner("📊 Calculando estadísticas..."):
             respuesta = orquestador.invoke({"input": "Quiero un Reporte de estadísticas descriptivas"})
             st.session_state['reporte_estadisticas'] = respuesta["output"]
 
     # Exhibe el reporte almacenado con opción de descarga
     if 'reporte_estadisticas' in st.session_state:
-        with st.expander("Resultado: Reporte de estadísticas descriptivas"):
+        with st.expander("📈 Resultado: Estadísticas Descriptivas"):
             st.markdown(st.session_state['reporte_estadisticas'])
 
-            st.download_button(
-                label="📥 Descargar Reporte",
-                data=st.session_state['reporte_estadisticas'],
-                file_name="reporte_estadisticas_descritivas.md",
-                mime="text/markdown"  
-            )
+        st.download_button(
+            label="📥 Descargar Reporte Estadístico",
+            data=st.session_state['reporte_estadisticas'],
+            file_name="reporte_estadisticas_descritivas.md",
+            mime="text/markdown"
+        )
    
-   # PERGUNTA SOBRE LOS DATOS
+    # PERGUNTA SOBRE LOS DATOS
     st.markdown("---")
-    st.markdown("## 🔎 Preguntas sobre los datos")
-    pregunta_sobre_datos = st.text_input("Realiza una pregunta sobre los datos (ej: 'Cuál es el promedio de tiempo de entrega?')")
-    if st.button("Responder pregunta", key="responder_pregunta_datos"):
-        with st.spinner("Analizando los datos 🦜"):
+    st.markdown("## 🔎💬 Pregunta a tus datos")
+    pregunta_sobre_datos = st.text_input(
+    "❓ Escribe tu pregunta",
+    key="pregunta_sobre_datos"
+    )
+    if st.button(
+    "🚀 Obtener respuesta",
+    key="responder_pregunta_datos"
+    ):
+        with st.spinner("🧠 Pensando sobre los datos..."):
             respuesta = orquestador.invoke({"input": pregunta_sobre_datos})
             st.markdown((respuesta["output"]))
 
 
     # GENERACIÓN DE GRÁFICOS
     st.markdown("---")
-    st.markdown("## 📊 Crear gráfico con base en una pregunta")
+    st.markdown("## 📊🎨 Crear visualizaciones")
 
-    pregunta_grafico = st.text_input("Qué deseas visualizar? (ej: 'Genera un gráfico del promedio de tiempo de entrega por clima.')")
-    if st.button("Generar gráfico", key="generar_grafico"):
-        with st.spinner("Generando el gráfico 🦜"):
+    pregunta_grafico = st.text_input(
+    "📈 ¿Qué deseas visualizar?",
+    key="pregunta_grafico"
+    )
+    if st.button(
+    "🎨 Generar gráfico",
+    key="generar_grafico"
+    ):
+        with st.spinner("📊 Construyendo visualización..."):
             orquestador.invoke({"input": pregunta_grafico})
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("📄 Filas", df.shape[0])
+
+    with col2:
+        st.metric("📊 Columnas", df.shape[1])
+
+    with col3:
+        st.metric("🧩 Valores nulos", int(df.isnull().sum().sum()))
